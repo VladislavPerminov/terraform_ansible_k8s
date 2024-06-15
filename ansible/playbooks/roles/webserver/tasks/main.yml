@@ -1,0 +1,51 @@
+- name: Install Node.js and npm
+  apt:
+    name: ['nodejs', 'npm']
+    state: present
+    update_cache: yes
+
+- name: Clone the dadjokes repository
+  git:
+    repo: https://github.com/VladislavPerminov/dadjokes.git
+    dest: /var/www/dadjokes
+
+- name: Install app dependencies
+  npm:
+    path: /var/www/dadjokes
+
+- name: Install and configure pm2
+  npm: 
+    name: pm2
+    global: yes
+
+- name: Start the dadjokes app with pm2
+  shell: pm2 start index.js --name dadjokes
+  args:
+    chdir: /var/www/dadjokes
+
+- name: Install and configure Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Copy Nginx configuration file
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/dadjokes
+  notify:
+    - Reload Nginx
+
+- name: Enable Nginx site
+  file:
+    src: /etc/nginx/sites-available/dadjokes
+    dest: /etc/nginx/sites-enabled/dadjokes
+    state: link
+  notify:
+    - Reload Nginx
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - Reload Nginx

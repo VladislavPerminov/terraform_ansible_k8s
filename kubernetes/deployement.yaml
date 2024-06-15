@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dadjokes-deployment
+spec:
+  replicas: 2  
+  selector:
+    matchLabels:
+      app: dadjokes
+  template:
+    metadata:
+      labels:
+        app: dadjokes
+    spec:
+      containers:
+      - name: dadjokes
+        image: steppenwol/dadjokes:latest 
+        ports:
+        - containerPort: 3000  
