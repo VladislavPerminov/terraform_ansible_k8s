@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "eu-north-1"  
-}
-
 # VPC
 resource "aws_vpc" "dadjokes_vpc" {
   cidr_block = "10.0.0.0/16"
@@ -49,7 +45,7 @@ resource "aws_route_table_association" "public_subnet_association" {
 }
 
 # Groupe de sécurité
-resource "aws_security_group" "allow_http" {
+resource "aws_security_group" "allow_http_ssh" {
   name        = "allow_http_ssh"
   description = "Allow HTTP and SSH inbound traffic"
   vpc_id      = aws_vpc.dadjokes_vpc.id
@@ -77,7 +73,7 @@ resource "aws_security_group" "allow_http" {
   }
 
   tags = {
-    Name = "allow_http"
+    Name = "allow_http_ssh"
   }
 }
 
@@ -86,7 +82,7 @@ resource "aws_instance" "web_server" {
   ami                    = "ami-08935252a36e26f85"  
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.public_subnet.id
-  vpc_security_group_ids = [aws_security_group.allow_http.id]
+  vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
   key_name               = "x"  
 
   tags = {
