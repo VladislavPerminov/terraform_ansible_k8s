@@ -84,7 +84,7 @@ resource "aws_security_group" "allow_http" {
 # Instance EC2
 resource "aws_instance" "web_server" {
   ami                    = "ami-08935252a36e26f85"  
-  instance_type          = "t2.micro"
+  instance_type          = "t3.micro"
   subnet_id              = aws_subnet.public_subnet.id
   vpc_security_group_ids = [aws_security_group.allow_http.id]
   key_name               = "x"  
